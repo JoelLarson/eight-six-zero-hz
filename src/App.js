@@ -5,21 +5,6 @@ import React, { useState, useEffect } from 'react';
 import Html5QrcodePlugin from "./Html5QrcodePlugin.jsx";
 import ResultContainerPlugin from "./ResultContainerPlugin.jsx";
 
-function MyComponent() {
-  const [text, setText] = useState('');
-
-  useEffect(() => {
-    const result = window.prompt('Enter some text:');
-    setText(result);
-  }, []); // The empty array ensures that the effect only runs on mount
-
-  return (
-    <div>
-      <p>You entered: {text}</p>
-    </div>
-  );
-}
-
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -36,6 +21,20 @@ class App extends React.Component {
       <div className="App">
         <section className="App-section">
           <div className="App-section-title"> Angelbotics Attendance</div>
+            <div>
+              <form>
+                <input type="text" name="event" placeholder="Input Event Name Here" style={{ textAlign: 'center' }} />
+                <br />
+                <label>
+                  <input type="radio" name="radio-group" value="checkin" />
+                  Check In
+                </label>
+                <label>
+                  <input type="radio" name="radio-group" value="checkout" />
+                  Check Out
+                </label>
+              </form>
+            </div>
           <br />
           <Html5QrcodePlugin
             fps={10}
