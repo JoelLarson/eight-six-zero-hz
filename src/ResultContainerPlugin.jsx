@@ -28,14 +28,18 @@ class ResultContainerTable extends React.Component {
       <table className={'Qrcode-result-table'}>
         <thead>
           <tr>
+            <td>Event Name</td>
             <td>Badge ID</td>
+            <td>Check In/Out</td>
           </tr>
         </thead>
         <tbody>
-          {decodedTexts.map((decodedText, i) => (
+          {decodedTexts.reverse().map((decodedText, i) => (
             <tr key={i}>
+              <td>{this.props.eventName}</td>
               <td>{decodedText}</td>
-            </tr>
+              <td>{this.props.radioGroup}</td>
+             </tr>
           ))}
         </tbody>
       </table>
@@ -44,15 +48,51 @@ class ResultContainerTable extends React.Component {
 }
 
 class ResultContainerPlugin extends React.Component {
-    render() { 
-        let results = filterResults(this.props.results);
-        return (<div className='Result-container'>
-                <div className='Result-header'>Scanned results ({results.length})</div>
-                <div className='Result-section'>
-                    <ResultContainerTable data={this.props.results} />
-                </div>
-            </div>);
-    }
+  constructor(props) {
+    super(props);
+    this.state = {
+      eventName: '',
+      radioGroup: '',
+    };
+  }
+
+  handleEventChange = (event) => {
+    this.setState({ eventName: event.target.value });
+  };
+
+  handleRadioGroupChange = (event) => {
+    this.setState({ radioGroup: event.target.value });
+  };
+
+  render() { 
+    let results = filterResults(this.props.results);
+    return (
+      <div className='Result-container'>
+        <div className='Result-header'>Badges Scanned: ({results.length})</div>
+        <div className='Result-section'>
+          <div>
+            <form>
+              <input type="text" name="event" placeholder="Input Event Name Here" style={{ textAlign: 'center' }} onChange={this.handleEventChange}/>
+              <br />
+              <label>
+                <input type="radio" name="radio-group" value="checkin" onChange={this.handleRadioGroupChange} />
+                Check In
+              </label>
+              <label>
+                <input type="radio" name="radio-group" value="checkout" onChange={this.handleRadioGroupChange} />
+                Check Out
+              </label>
+            </form>
+          </div>
+          <ResultContainerTable
+            data={this.props.results}
+            eventName={this.state.eventName}
+            radioGroup={this.state.radioGroup}
+            />
+        </div>
+      </div>
+    );
+  }
 }
 
 export default ResultContainerPlugin;
