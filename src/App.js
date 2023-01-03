@@ -7,6 +7,7 @@ import ResultContainerPlugin from "./ResultContainerPlugin.jsx";
 class App extends React.Component {
 	constructor(props) {
 		super(props);
+
 		this.state = {
 			decodedResults: [],
 		};
@@ -34,13 +35,13 @@ class App extends React.Component {
 		);
 	}
 
-
-
 	onNewScanResult(decodedText, decodedResult) {
 		console.log("App [result]", decodedResult);
 
 		let decodedResults = this.state.decodedResults;
+
 		decodedResults.push(decodedResult);
+		
 		if (decodedText != null) {
 			this.setState((state, props) => {
 				state.decodedResults.push(decodedResult);
