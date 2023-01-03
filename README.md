@@ -1,6 +1,8 @@
-# Setup
+# Angelbotics Attendance
 
-## Packages to Install
+## Setup
+
+### Packages to Install
 
 * git
 * nvm
@@ -12,6 +14,12 @@ nvm use
 # Build the project
 npm run-script build
 
-# Start the project on port 8080
+# Start the project on port 8000
 npm run-script start
+```
+## Misc
+
+### Lint package.json file
+```bash
+npx sort-package-json
 ```
