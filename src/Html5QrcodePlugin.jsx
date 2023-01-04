@@ -18,30 +18,30 @@ class Html5QrcodePlugin extends React.Component {
 
 		componentDidMount() {
 				// Creates the configuration object for Html5QrcodeScanner.
-				function createConfig(props) {
-						var config = {};
-						if (props.fps) {
-						config.fps = props.fps;
-						}
-						if (props.qrbox) {
-						config.qrbox = props.qrbox;
-						}
-						if (props.aspectRatio) {
-						config.aspectRatio = props.aspectRatio;
-						}
-						if (props.disableFlip !== undefined) {
-						config.disableFlip = props.disableFlip;
-						}
-						if (props.zoom) {
-							config.zoom = props.zoom;
-						}
-						config.formatsToSupport = [Html5QrcodeSupportedFormats.QR_CODE];
-						return config
-						
+				let config = {};
+
+				if (this.props.fps) {
+					config.fps = this.props.fps;
 				}
 
-				//var config = createConfig(this.props);
-				var config = createConfig(this.props);
+				if (this.props.qrbox) {
+					config.qrbox = this.props.qrbox;
+				}
+				
+				if (this.props.aspectRatio) {
+					config.aspectRatio = this.props.aspectRatio;
+				}
+				
+				if (this.props.disableFlip !== undefined) {
+					config.disableFlip = this.props.disableFlip;
+				}
+				
+				if (this.props.zoom) {
+					config.zoom = this.props.zoom;
+				}
+				
+				config.formatsToSupport = [Html5QrcodeSupportedFormats.QR_CODE];
+						
 				var verbose = this.props.verbose === true;
 
 				// Suceess callback is required.
@@ -52,6 +52,7 @@ class Html5QrcodePlugin extends React.Component {
 
 				this.html5QrcodeScanner = new Html5QrcodeScanner(
 						qrcodeRegionId, config, verbose);
+		
 				this.html5QrcodeScanner.render(
 						this.props.qrCodeSuccessCallback,
 						this.props.qrCodeErrorCallback);

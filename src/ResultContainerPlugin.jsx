@@ -1,29 +1,15 @@
 import React from 'react';
 
-function filterResults(results) {
-    let filteredResults = [];
-    for (var i = 0; i < results.length; ++i) {
-        if (i === 0) {
-            filteredResults.push(results[i]);
-            continue;
-        }
-
-        if (results[i].decodedText !== results[i-1].decodedText) {
-            filteredResults.push(results[i]);
-        }
-    }
-    return filteredResults;
-}
-
 class ResultContainerTable extends React.Component {
   render() {
-    var results = filterResults(this.props.data);
-    var decodedTexts = results.map(result => {
+    var decodedTexts = this.props.results.map(result => {
       // Split the decodedText string by the '=' delimiter
       var splitDecodedText = result.decodedText.split('=');
+
       // Return the second column of data
       return splitDecodedText[1];
     });
+
     return (
       <table className={'Qrcode-result-table'}>
         <thead>
@@ -50,6 +36,7 @@ class ResultContainerTable extends React.Component {
 class ResultContainerPlugin extends React.Component {
   constructor(props) {
     super(props);
+
     this.state = {
       eventName: '',
       radioGroup: '',
@@ -64,11 +51,23 @@ class ResultContainerPlugin extends React.Component {
     this.setState({ radioGroup: event.target.value });
   };
 
-  render() { 
-    let results = filterResults(this.props.results);
+  render() {
+    let filteredResults = [];
+
+    for (var i = 0; i < this.props.results.length; ++i) {
+        if (i === 0) {
+            filteredResults.push(this.props.results[i]);
+            continue;
+        }
+
+        if (this.props.results[i].decodedText !== this.props.results[i-1].decodedText) {
+            filteredResults.push(this.props.results[i]);
+        }
+    }
+    
     return (
       <div className='Result-container'>
-        <div className='Result-header'>Badges Scanned: ({results.length})</div>
+        <div className='Result-header'>Badges Scanned: ({filteredResults.length})</div>
         <div className='Result-section'>
           <div>
             <form>
@@ -85,7 +84,7 @@ class ResultContainerPlugin extends React.Component {
             </form>
           </div>
           <ResultContainerTable
-            data={this.props.results}
+            results={filteredResults}
             eventName={this.state.eventName}
             radioGroup={this.state.radioGroup}
             />
