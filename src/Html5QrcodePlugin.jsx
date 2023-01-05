@@ -1,62 +1,44 @@
-import { Html5QrcodeScanner, Html5QrcodeSupportedFormats } from "html5-qrcode";
-import React from 'react';
+import {
+	Html5QrcodeScanner,
+	Html5QrcodeScannerState
+} from "html5-qrcode";
 
-const qrcodeRegionId = "html5qr-code-full-region";
+import React, { useEffect, useRef } from 'react';
 
-class Html5QrcodePlugin extends React.Component {
-		render() {
-				return <div id={qrcodeRegionId} />;
+export const Html5QrcodePlugin = ({
+	elementId,
+	config,
+	onCodeScanned,
+	onCodeScanFailed = undefined,
+	verbose = false,
+	className
+}) => {
+	const html5QrcodeScanner = useRef(null);
+
+	useEffect(() => {
+		const initiatedStates = [
+			Html5QrcodeScannerState.SCANNING,
+			Html5QrcodeScannerState.PAUSED,
+		];
+
+		if (!html5QrcodeScanner.current || initiatedStates.includes(html5QrcodeScanner.current?.getState())) {
+			html5QrcodeScanner.current = new Html5QrcodeScanner(
+				elementId,
+				config,
+				verbose
+			);
+
+			html5QrcodeScanner.current?.render(onCodeScanned, onCodeScanFailed);
 		}
 
-		componentWillUnmount() {
-				// TODO(mebjas): See if there is a better way to handle
-				//	promise in `componentWillUnmount`.
-				this.html5QrcodeScanner.clear().catch(error => {
-						console.error("Failed to clear html5QrcodeScanner. ", error);
+		return () => {
+			if (html5QrcodeScanner.current && initiatedStates.includes(html5QrcodeScanner.current?.getState())) {
+				html5QrcodeScanner.current?.clear().catch(error => {
+					console.error("Failed to clear html5QrcodeScanner. ", error);
 				});
-		}
+			}
+		};
+	}, [elementId, config, onCodeScanned, onCodeScanFailed, verbose, html5QrcodeScanner]);
 
-		componentDidMount() {
-				// Creates the configuration object for Html5QrcodeScanner.
-				let config = {};
-
-				if (this.props.fps) {
-					config.fps = this.props.fps;
-				}
-
-				if (this.props.qrbox) {
-					config.qrbox = this.props.qrbox;
-				}
-				
-				if (this.props.aspectRatio) {
-					config.aspectRatio = this.props.aspectRatio;
-				}
-				
-				if (this.props.disableFlip !== undefined) {
-					config.disableFlip = this.props.disableFlip;
-				}
-				
-				if (this.props.zoom) {
-					config.zoom = this.props.zoom;
-				}
-				
-				config.formatsToSupport = [Html5QrcodeSupportedFormats.QR_CODE];
-						
-				var verbose = this.props.verbose === true;
-
-				// Suceess callback is required.
-				if (!(this.props.qrCodeSuccessCallback )) {
-						// eslint-disable-next-line no-throw-literal
-						throw "qrCodeSuccessCallback is required callback.";
-				}
-
-				this.html5QrcodeScanner = new Html5QrcodeScanner(
-						qrcodeRegionId, config, verbose);
-		
-				this.html5QrcodeScanner.render(
-						this.props.qrCodeSuccessCallback,
-						this.props.qrCodeErrorCallback);
-		}
+	return <div id={elementId} className={className} />;
 };
-
-export default Html5QrcodePlugin;
